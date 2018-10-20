@@ -1,5 +1,7 @@
 const express = require('express');
 const Booking = require('../schemas/Booking');
+const url = process.env.CLOUDAMQP_URL || "amqp://localhost";
+const open = require('amqplib').connect(url);
 
 const router = express.Router();
 
@@ -26,6 +28,11 @@ router.get('/booking', (req, res) => {
         booking.save();
         res.json(booking);
     });
+})
+.post('/booking', (req, res) => {
+    let booking = new Booking(req.body);
+    booking.save();
+    res.status(201).send(booking);
 });
 
 router.get('/hello', (req, res) => {
